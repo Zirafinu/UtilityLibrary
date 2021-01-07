@@ -1,0 +1,6 @@
+[submodule "remoteProjects/gsl"]
+	path = remoteProjects/gsl
+	url = https://github.com/microsoft/GSL.git
+[submodule "remoteProjects/doctest"]
+	path = remoteProjects/doctest
+	url = https://github.com/onqtam/doctest.git
