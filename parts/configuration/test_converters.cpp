@@ -23,6 +23,8 @@ std::string ToString(const T & array) {
 	return std::accumulate(std::begin(array), std::end(array), std::string{});
 }
 
+using utility::parameters::SErrorMessages;
+
 TEST_SUITE("serial converter") {
 	using SerialConverter = utility::parameters::CFixedArrayConverter<SerialType>;
 	TEST_CASE("serial exact match converter") {
@@ -40,9 +42,9 @@ TEST_SUITE("serial converter") {
 		SerialType value {0};
 		std::string serial_expected = ToString(value);
 		std::string txt = "1234567";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_TOOSHORT));
-                std::string serial = ToString(value);
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_TEXT_TOO_SHORT));
+		std::string serial = ToString(value);
 		CHECK(serial == serial_expected);
 	}
 
@@ -52,9 +54,9 @@ TEST_SUITE("serial converter") {
 		SerialType value {0};
 		std::string serial_expected = ToString(value);
 		std::string txt = "123456789";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_TOOLONG));
-                std::string serial = ToString(value);
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_TEXT_TOO_LONG));
+		std::string serial = ToString(value);
 		CHECK(serial == serial_expected);
 	}
 
@@ -64,24 +66,24 @@ TEST_SUITE("serial converter") {
 		SerialType value {0};
 		std::string serial_expected = ToString(value);
 		std::string txt = "1234567!";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_INVALID));
-                std::string serial = ToString(value);
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_INVALID_CHARACTERS));
+		std::string serial = ToString(value);
 		CHECK(serial == serial_expected);
 
 		txt = "1234567,";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_INVALID));
-                txt = "1234567.";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_INVALID));
-                txt = "1234567\n";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_INVALID));
-                txt = "1234567)";
-                CHECK(ToString(converter.Parse(txt, &value)) ==
-                      ToString(SerialConverter::ERROR_INVALID));
-        }
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_INVALID_CHARACTERS));
+		txt = "1234567.";
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_INVALID_CHARACTERS));
+		txt = "1234567\n";
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_INVALID_CHARACTERS));
+		txt = "1234567)";
+		CHECK(ToString(converter.Parse(txt, &value)) ==
+			  ToString(SErrorMessages::ERROR_INVALID_CHARACTERS));
+	}
 
 	TEST_CASE("serial to string") {
 		SerialValueConverter converter{};
@@ -120,8 +122,8 @@ TEST_SUITE("number converter") {
 		int i = -1;
 		auto err = conv.Parse(txt, &i);
 		CHECK(i == -1);
-                CHECK(ToString(err) == ToString(CNumberConverter<int>::ERROR_TOOSHORT));
-        }
+		CHECK(ToString(err) == ToString(SErrorMessages::ERROR_NUMBER_TOO_SMALL));
+	}
 
 	TEST_CASE("valid string") {
 		CNumberConverter<int> conv{};
@@ -144,8 +146,8 @@ TEST_SUITE("number converter") {
 		char i = -1;
 		auto err = conv.Parse(txt, &i);
 		CHECK(i == -1);
-                CHECK(ToString(err) == ToString(CNumberConverter<char>::ERROR_TOOLONG));
-        }
+		CHECK(ToString(err) == ToString(SErrorMessages::ERROR_NUMBER_TOO_LARGE));
+	}
 
 	TEST_CASE("long long target") {
 		CNumberConverter<int64_t> conv{};

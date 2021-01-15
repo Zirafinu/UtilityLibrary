@@ -72,11 +72,11 @@ public:
 	CAValueConverter() = default;
 	virtual ~CAValueConverter() = default;
 
-        [[nodiscard]] virtual auto Parse(const CAParameter::ValueString&, NotNull<T> value) const
-            -> CAParameter::ErrorMessage = 0;
+	[[nodiscard]] virtual auto Parse(const CAParameter::ValueString&, NotNull<T> value) const
+		-> CAParameter::ErrorMessage = 0;
 
-        [[nodiscard]] virtual auto Stringify(CAParameter::OutputStringBuffer,
-			const T& value) const -> CAParameter::UsedCharacters = 0;
+	[[nodiscard]] virtual auto Stringify(CAParameter::OutputStringBuffer,
+		const T& value) const -> CAParameter::UsedCharacters = 0;
 
 	// deleted functions
 	CAValueConverter(const CAValueConverter&) = delete;

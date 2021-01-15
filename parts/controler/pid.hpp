@@ -11,75 +11,79 @@
 #include <numeric>
 
 namespace utility::controler {
-template<typename InputType, typename OutputType = InputType,
-		typename ComputationType = OutputType>
-class PID_Control {
+template<typename INPUT_TYPE, typename OUTPUT_TYPE = INPUT_TYPE,
+		typename COMPUTATION_TYPE = OUTPUT_TYPE>
+class CPidControl {
 public:
-	struct ParameterSet {
-		ComputationType proportional_part;
-		ComputationType integral_part;
-		ComputationType derivative_part;
+	struct SParameterSet {
+		COMPUTATION_TYPE m_proportional_part;
+		COMPUTATION_TYPE m_integral_part;
+		COMPUTATION_TYPE m_derivative_part;
 	};
-	struct LimitSet {
-		OutputType lower_bound;
-		OutputType upper_bound;
+	struct SLimitSet {
+		OUTPUT_TYPE m_lower_bound;
+		OUTPUT_TYPE m_upper_bound;
 	};
-public:
-	PID_Control(const ParameterSet &params = {},
-			const LimitSet &limits = LimitSet {
-					std::numeric_limits<OutputType>::lowest(), std::numeric_limits<
-							OutputType>::max() }) :
-			parameters(params), limits(limits) {
+
+	explicit CPidControl(const SParameterSet &params = {},
+			const SLimitSet &limits = SLimitSet {
+					std::numeric_limits<OUTPUT_TYPE>::lowest(), std::numeric_limits<
+							OUTPUT_TYPE>::max() }) :
+			m_parameters(params), m_limits(limits) {
 	}
 
-	void setParameters(const ParameterSet &parameters) noexcept {
-		this->parameters = parameters;
+	void SetParameters(const SParameterSet &parameters) noexcept {
+		this->m_parameters = parameters;
 	}
-	void setLimits(const LimitSet &limits) noexcept {
-		this->limits = limits;
+	void SetLimits(const SLimitSet &limits) noexcept {
+		this->m_limits = limits;
 	}
-	void setSetPoint(const OutputType& value) noexcept {
-		setpoint = value;
-	}
-
-	[[nodiscard]] auto getParameters() const noexcept -> const ParameterSet& {
-		return parameters;
-	}
-	[[nodiscard]] auto getLimits() const noexcept -> const LimitSet& {
-		return limits;
-	}
-	[[nodiscard]] auto getSetPoint() const noexcept -> const OutputType& {
-		return setpoint;
+	void SetSetPoint(const OUTPUT_TYPE& value) noexcept {
+		m_setpoint = value;
 	}
 
-	OutputType ComputeOutput(const InputType & input) {
-		const ComputationType error = (setpoint - input);
+	[[nodiscard]] auto GetParameters() const noexcept -> const SParameterSet& {
+		return m_parameters;
+	}
+	[[nodiscard]] auto GetLimits() const noexcept -> const SLimitSet& {
+		return m_limits;
+	}
+	[[nodiscard]] auto GetSetPoint() const noexcept -> const OUTPUT_TYPE& {
+		return m_setpoint;
+	}
 
-		const ComputationType ppart = error * parameters.proportional_part;
-		const ComputationType ipart = (integral + error) * parameters.integral_part;
-		const ComputationType dpart = (error - last_error) * parameters.derivative_part;
-		last_error = error;
+	OUTPUT_TYPE ComputeOutput(const INPUT_TYPE & input) {
+		const COMPUTATION_TYPE error = (m_setpoint - input);
 
-		const OutputType output = ppart + ipart + dpart;
-		if(output > limits.upper_bound) {
-			if(error < 0) integral += error;
-			return limits.upper_bound;
+		const COMPUTATION_TYPE ppart = error * m_parameters.m_proportional_part;
+		const COMPUTATION_TYPE ipart = (m_integral + error) * m_parameters.m_integral_part;
+		const COMPUTATION_TYPE dpart = (error - m_last_error) * m_parameters.m_derivative_part;
+		m_last_error = error;
+
+		const OUTPUT_TYPE output = ppart + ipart + dpart;
+		if(output > m_limits.m_upper_bound) {
+			if(error < 0) {
+				m_integral += error;
+			}
+			return m_limits.m_upper_bound;
 		}
-		if(output < limits.lower_bound) {
-			if(error > 0) integral += error;
-			return limits.lower_bound;
+		if(output < m_limits.m_lower_bound) {
+			if(error > 0) {
+				m_integral += error;
+			}
+			return m_limits.m_lower_bound;
 		}
 
-		integral += error;
+		m_integral += error;
 		return output;
 	}
 private:
-	ComputationType last_error{0};
-	ComputationType integral {0};
-	OutputType setpoint {0};
-	ParameterSet parameters;
-	LimitSet limits;
+	COMPUTATION_TYPE m_last_error{0};
+	COMPUTATION_TYPE m_integral {0};
+	OUTPUT_TYPE m_setpoint {0};
+	SParameterSet m_parameters;
+	SLimitSet m_limits;
 };
-}
+}// namespace utility::controler
 
 #endif /* PID_HPP */

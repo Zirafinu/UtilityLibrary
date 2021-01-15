@@ -8,7 +8,8 @@ add_executable(test_crc test_crc.cpp crc.hpp)
 target_link_libraries(test_crc PRIVATE doctest::doctest)
 target_link_libraries(test_crc PRIVATE ${PROJECT_NAME}::CRC)
 add_test(crc test_crc)
-#set_target_properties(test_crc PROPERTIES CXX_CLANG_TIDY "clang-tidy;--line-filter=[{\"name\":\"doctest.h\"}];-config=")
+
+set_target_properties(test_crc PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 	
 add_custom_command(TARGET test_crc
                    POST_BUILD

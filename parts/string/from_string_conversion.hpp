@@ -22,40 +22,43 @@ using NotNull = gsl::not_null<T*>;
 
 namespace helpers {
 
+template<typename T, typename IT_T>
+struct SParsingResult{
+	T m_value;
+	IT_T m_it;
+};
+
 template <typename T, typename IT_T>
-[[nodiscard]] constexpr auto ParseSign(NotNull<IT_T> cur_char_it) -> int_fast8_t {
-  auto c_char = **cur_char_it;
+[[nodiscard]] constexpr auto ParseSign(IT_T cur_char_it) -> SParsingResult<int_fast8_t, IT_T> {
+  auto c_char = *cur_char_it;
 
   if constexpr (std::is_signed_v<T>) {
     if (c_char == '-') {
-      ++*cur_char_it;
-      return -1;
+      return {-1, ++cur_char_it};
     }
   }
 
   if (c_char == '+') {
-	  ++*cur_char_it;
+	  return {1, ++cur_char_it};
   }
-  return 1;
+  return {1, cur_char_it};
 }
 
 template <typename T, typename IT_T>
-[[nodiscard]] constexpr auto ParseBase(NotNull<IT_T> cur_char_it, const IT_T &end_char_it) -> T {
-	if ((*cur_char_it)[0] == '0' && std::distance(*cur_char_it, end_char_it) >= 2) {
-		if (char(std::tolower((*cur_char_it)[1])) == 'b') {
-			(*cur_char_it) += 2;
-			return {BINARY_BASE};
-		}
-		if (char(std::tolower((*cur_char_it)[1])) == 'd') {
-			(*cur_char_it) += 2;
-			return {DECIMAL_BASE};
-		}
-		if (char(std::tolower((*cur_char_it)[1])) == 'x') {
-			(*cur_char_it) += 2;
-			return {HEXDEC_BASE};
+[[nodiscard]] constexpr auto ParseBase(IT_T cur_char_it, const IT_T &end_char_it) -> SParsingResult<T, IT_T> {
+	if (*cur_char_it == '0' && std::distance(cur_char_it, end_char_it) >= 2) {
+		switch(char(std::tolower(cur_char_it[1]))){
+		case 'b':
+			return  {BINARY_BASE, cur_char_it+2};
+		case 'd':
+			return  {DECIMAL_BASE, cur_char_it+2};
+		case 'x':
+			return  {HEXDEC_BASE, cur_char_it+2};
+		default:
+			break;
 		}
 	}
-	return {DECIMAL_BASE};
+	return {DECIMAL_BASE, cur_char_it};
 }
 
 template <typename CHAR_TYPE>
@@ -71,10 +74,13 @@ template <typename CHAR_TYPE>
 template <typename T, bool CHECK_OVERFLOWS = false, typename IT_T>
 [[nodiscard]] constexpr auto IntFromString(IT_T cur_char_it, IT_T end_char_it,
 		NotNull<T> result, T base = 0) -> IT_T {
-  using NnIt = NotNull<decltype(cur_char_it)>;
-  auto sign = helpers::ParseSign<T>(NnIt{&cur_char_it});
+  const auto res = helpers::ParseSign<T>(cur_char_it);
+  const auto sign = res.m_value;
+  cur_char_it = res.m_it;
   if (base == 0) {
-    base = helpers::ParseBase<T>(NnIt{&cur_char_it}, end_char_it);
+	  const auto res = helpers::ParseBase<T>(cur_char_it, end_char_it);
+	  base = res.m_value;
+	  cur_char_it = res.m_it;
   }
 
   T tmp = 0;
@@ -102,10 +108,14 @@ template<typename T, typename IT_T>
 [[nodiscard]] constexpr auto FloatFromString(IT_T cur_char_it, IT_T end_char_it, NotNull<T> result)
           -> IT_T {
     static_assert(std::is_floating_point_v<T>);
-    using NnIt = NotNull<decltype(cur_char_it)>;
 
-    const auto sign = helpers::ParseSign<T>(NnIt{&cur_char_it});
-    const T base = helpers::ParseBase<T>(NnIt{&cur_char_it}, end_char_it);
+    const auto sign_res = helpers::ParseSign<T>(cur_char_it);
+    const auto sign = sign_res.m_value;
+    cur_char_it = sign_res.m_it;
+
+    const auto base_res = helpers::ParseBase<T>(cur_char_it, end_char_it);
+    const T base = base_res.m_value;
+    cur_char_it = base_res.m_it;
 
     T integer_part{0};
     cur_char_it = IntFromString<T>(cur_char_it, end_char_it, NotNull<T>{&integer_part}, base);
@@ -137,8 +147,8 @@ template <typename T, bool CHECK_OVERFLOW = false, typename IT_T = char *>
   }
 
   if constexpr (std::is_floating_point_v<T>) {
-    return FloatFromString<T, CHECK_OVERFLOW>(begin, end, result);
-  }else if constexpr(std::is_integral_v<T>) {
+    return FloatFromString<T>(begin, end, result);
+  } else if constexpr(std::is_integral_v<T>) {
       return IntFromString<T, CHECK_OVERFLOW>(begin, end, result);
   } else {
     static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>);

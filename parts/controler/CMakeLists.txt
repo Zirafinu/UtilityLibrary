@@ -8,7 +8,8 @@ add_executable(test_pid test_pid.cpp pid.hpp)
 target_link_libraries(test_pid PRIVATE doctest::doctest)
 target_link_libraries(test_pid PRIVATE ${PROJECT_NAME}::STABILIZER)
 add_test(pid test_pid)
-#set_target_properties(test_pid PROPERTIES CXX_CLANG_TIDY "clang-tidy;--line-filter=[{\"name\":\"doctest.h\"}];-config=")
+
+set_target_properties(test_pid PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 
 add_custom_command(TARGET test_pid
                    POST_BUILD

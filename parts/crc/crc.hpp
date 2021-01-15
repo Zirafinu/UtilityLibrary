@@ -110,10 +110,9 @@ public:
 	}
 };
 
-template<typename T = CCrcBase<uint16_t, 0x8005U, CHAR_BIT>, // NOLINT(readability-magic-numbers,cppcoreguidelines-avoid-magic-numbers)
-		typename T::ValueType INITIAL = 0x0000U, // NOLINT(readability-magic-numbers,cppcoreguidelines-avoid-magic-numbers)
-		typename T::ValueType XOR_VALUE = 0x0000U, bool REFLECT_REMAINDER =
-				false> // NOLINT(readability-magic-numbers,cppcoreguidelines-avoid-magic-numbers)
+template<typename T = CCrcBase<uint16_t, 0x8005U, CHAR_BIT>, // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		typename T::ValueType INITIAL = 0x0000U, // NOLINT(cppcoreguidelines-avoid-magic-number)
+		typename T::ValueType XOR_VALUE = 0x0000U, bool REFLECT_REMAINDER = false>
 class CCrc {
 	using ValueType = typename T::ValueType;
 	T m_ccrc_base { };
@@ -149,6 +148,6 @@ public:
 		}
 	}
 };
-} /* namespace utilities */
+} /* namespace utility::crc */
 
 #endif /* CRC_HPP */

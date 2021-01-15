@@ -17,77 +17,77 @@ TEST_SUITE("from string conversion") {
 	TEST_CASE("parseSign") {
 		using utility::string_conversion::helpers::ParseSign;
 
-		char sign{};
-		char* signptr{};
+		std::array<char,1> sign{};
 
-		sign = '0';
-		signptr = &sign;
-		CHECK(ParseSign<int, char*>(&signptr) == 1);
-		CHECK(signptr == &sign);
+		sign[0] = '0';
+		auto res = ParseSign<int>(sign.begin());
+		CHECK(res.m_value == 1);
+		CHECK(res.m_it == sign.begin());
 
-		sign = '-';
-		signptr = &sign;
-		CHECK(ParseSign<int, char*>(&signptr) == -1);
-		CHECK(signptr == (&sign + 1));
+		sign[0] = '-';
+		res = ParseSign<int>(sign.begin());
+		CHECK(res.m_value == -1);
+		CHECK(res.m_it == sign.end());
 
-		signptr = &sign;
-		CHECK(ParseSign<float, char*>(&signptr) == -1);
-		CHECK(signptr == (&sign + 1));
+		res = ParseSign<float>(sign.begin());
+		CHECK(res.m_value == -1);
+		CHECK(res.m_it == sign.end());
 
-		signptr = &sign;
-		CHECK(ParseSign<unsigned, char*>(&signptr) == 1);
-		CHECK(signptr == &sign);
+		res = ParseSign<unsigned>(sign.begin());
+		CHECK(res.m_value == 1);
+		CHECK(res.m_it == sign.begin());
 
-		sign = '+';
-		signptr = &sign;
-		CHECK(ParseSign<int, char*>(&signptr) == 1);
-		CHECK(signptr == (&sign + 1));
-		signptr = &sign;
-		CHECK(ParseSign<unsigned, char*>(&signptr) == 1);
-		CHECK(signptr == (&sign + 1));
+		sign[0] = '+';
+		res = ParseSign<int>(sign.begin());
+		CHECK(res.m_value == 1);
+		CHECK(res.m_it == sign.end());
+
+		res = ParseSign<unsigned>(sign.begin());
+		CHECK(res.m_value == 1);
+		CHECK(res.m_it == sign.end());
 	}
 
 	template<typename T>
-	void Check_parseBase(){
+	void CheckParseBase(){
 		std::array<char, 2> base {'0', '1'};
-		auto base_ptr = base.begin();
 
 		using utility::string_conversion::helpers::ParseBase;
 		using utility::string_conversion::helpers::DECIMAL_BASE;
 		using utility::string_conversion::helpers::BINARY_BASE;
 		using utility::string_conversion::helpers::HEXDEC_BASE;
 
-		CHECK(ParseBase<T, char*>(&base_ptr, base.end()) == DECIMAL_BASE);
-		CHECK(base_ptr == base.begin());
+		auto res = ParseBase<T>(base.begin(), base.end());
+		CHECK(res.m_value == DECIMAL_BASE);
+		CHECK(res.m_it == base.begin());
 
 		base[1] = 'd';
-		base_ptr = base.begin();
-		CHECK(ParseBase<T, char*>(&base_ptr, base.end()) == DECIMAL_BASE);
-		CHECK(base_ptr == base.end());
+		res = ParseBase<T>(base.begin(), base.end());
+		CHECK(res.m_value == DECIMAL_BASE);
+		CHECK(res.m_it == base.end());
 
 		base[1] = 'x';
-		base_ptr = base.begin();
-		CHECK(ParseBase<T, char*>(&base_ptr, base.end()) == HEXDEC_BASE);
-		CHECK(base_ptr == base.end());
+		res = ParseBase<T>(base.begin(), base.end());
+		CHECK(res.m_value == HEXDEC_BASE);
+		CHECK(res.m_it == base.end());
 
 		base[1] = 'b';
-		base_ptr = base.begin();
-		CHECK(ParseBase<T, char*>(&base_ptr, base.end()) == BINARY_BASE);
-		CHECK(base_ptr == base.end());
+		res = ParseBase<T>(base.begin(), base.end());
+		CHECK(res.m_value == BINARY_BASE);
+		CHECK(res.m_it == base.end());
 
 		std::array<char, 1> base2 {'0'};
-		auto base2_ptr = base2.begin();
-		CHECK(ParseBase<T, char*>(&base2_ptr, base2.end()) == DECIMAL_BASE);
-		CHECK(base2_ptr == base2.begin());
+		res = ParseBase<T>(base2.begin(), base2.end());
+		CHECK(res.m_value == DECIMAL_BASE);
+		CHECK(res.m_it == base2.begin());
 
-		base2_ptr = base2.begin();
-		CHECK(ParseBase<T, char*>(&base2_ptr, base2.begin()) == DECIMAL_BASE);
-		CHECK(base2_ptr == base2.begin());
+		res = ParseBase<T>(base2.begin(), base2.begin());
+		CHECK(res.m_value == DECIMAL_BASE);
+		CHECK(res.m_it == base2.begin());
 	}
 	TEST_CASE("parseSign") {
-		Check_parseBase<int>();
-		Check_parseBase<unsigned>();
-		Check_parseBase<float>();
+		CheckParseBase<int>();
+		CheckParseBase<unsigned>();
+		CheckParseBase<float>();
 	}
 
 	TEST_CASE("parseDigit") {
@@ -101,8 +101,8 @@ TEST_SUITE("from string conversion") {
 	}
 
 	TEST_CASE("parseInteger") {
-		int result;
-		unsigned u_result;
+		int result{};
+		unsigned u_result{};
 
 		using utility::string_conversion::IntFromString;
 		using utility::string_conversion::FromString;
@@ -144,7 +144,7 @@ TEST_SUITE("from string conversion") {
 		CHECK(parsed_to == (btxt.begin() + 4));
 		CHECK(u_result == 1);
 
-		std::string etxt = "";
+		std::string etxt{};
 		parsed_to = FromString<int>(etxt.begin(), etxt.end(), &result);
 		CHECK(parsed_to == etxt.end());
 		CHECK(result == 1);
@@ -154,7 +154,7 @@ TEST_SUITE("from string conversion") {
 	}
 
 	TEST_CASE("pares float") {
-		double result;
+		double result{};
 		using utility::string_conversion::FloatFromString;
 
 		const std::string txt {"123456789"};
@@ -165,17 +165,17 @@ TEST_SUITE("from string conversion") {
 		const std::string xtxt {"-0x123456789"};
 		parsed_to = FloatFromString<double>(xtxt.begin(), xtxt.end(), &result);
 		CHECK(parsed_to == xtxt.end());
-		CHECK(result == -4886718345.0);
+		CHECK(result == -4886718345.0);//NOLINT
 
 		const std::string ftxt {"0.75"};
 		parsed_to = FloatFromString<double>(ftxt.begin(), ftxt.end(), &result);
 		CHECK(parsed_to == ftxt.end());
-		CHECK(result == 0.75);
+		CHECK(result == 0.75);//NOLINT
 
 		const std::string fxtxt {"0x0.0000000075apa"};
 		parsed_to = FloatFromString<double>(fxtxt.begin(), fxtxt.end(), &result);
 		CHECK(parsed_to == fxtxt.end());
-		CHECK(result == 117.625);
+		CHECK(result == 117.625);//NOLINT
 
 		const std::string fdmtxt {"100e-2"};
 		parsed_to = FloatFromString<double>(fdmtxt.begin(), fdmtxt.end(), &result);
@@ -192,58 +192,58 @@ TEST_SUITE("from string conversion") {
 TEST_SUITE("to string conversion") {
 	using utility::string_conversion::ToString;
 	TEST_CASE("to empty string") {
-		std::string txt = "";
-		auto used = ToString(txt.begin(), txt.end(), 1, 10);
+		std::string txt{};
+		auto used = ToString(txt.begin(), txt.end(), 1, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used > 0);
-		used = ToString(txt.begin(), txt.end(), 2.0f, 10);
+		used = ToString(txt.begin(), txt.end(), 2.0F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used > 0);
 	}
 
 	TEST_CASE("to matching string") {
 		std::string txt = "x";
-		auto used = ToString(txt.begin(), txt.end(), 1, 10);
+		auto used = ToString(txt.begin(), txt.end(), 1, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 1);
 		CHECK(txt == std::string("1"));
-		used = ToString(txt.begin(), txt.end(), 1.0f, 10);
+		used = ToString(txt.begin(), txt.end(), 1.0F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 1);
 		CHECK(txt == std::string("1"));
 	}
 
 	TEST_CASE("long int to matching string") {
 		std::string txt{};
-		txt.resize(8);
-		auto used = ToString(txt.begin(), txt.end(), 12345678, 10);
+		txt.resize(8);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		auto used = ToString(txt.begin(), txt.end(), 12345678, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 8);
 		CHECK(txt == std::string("12345678"));
-		txt.resize(100);
-		used = ToString(txt.begin(), txt.end(), 2.3456789f, 10);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), 2.3456789F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 23);
-		txt.resize(23);
+		txt.resize(23);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(txt == std::string("2.345678806304931640625"));
-		txt.resize(9);
-		used = ToString(txt.begin(), txt.end(), 0.3456789f, 10);
+		txt.resize(9);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), 0.3456789F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 9);
 		CHECK(txt == std::string("0.3456789"));
 	}
 
 	TEST_CASE("float exp notation") {
 		std::string txt{};
-		txt.resize(100);
-		auto used = ToString(txt.begin(), txt.end(), 100.0e10f, 10);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		auto used = ToString(txt.begin(), txt.end(), 100.0e10F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 4);
 		txt.resize(used);
 		CHECK(txt == std::string("1e12"));
-		txt.resize(8);
-		used = ToString(txt.begin(), txt.end(), 999.99e10f, 10);
+		txt.resize(8);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), 999.99e10F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 8);
 		txt.resize(used);
 		CHECK(txt == std::string("9.999e12"));
-		used = ToString(txt.begin(), txt.end(), 100.0e-14f, 10);
+		used = ToString(txt.begin(), txt.end(), 100.0e-14F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 5);
 		txt.resize(used);
 		CHECK(txt == std::string("1e-12"));
-		txt.resize(9);
-		used = ToString(txt.begin(), txt.end(), 999.99e-14f, 10);
+		txt.resize(9);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), 999.99e-14F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 9);
 		txt.resize(used);
 		CHECK(txt == std::string("9.999e-12"));
@@ -251,12 +251,12 @@ TEST_SUITE("to string conversion") {
 
 	TEST_CASE("sign test") {
 		std::string txt{};
-		txt.resize(100);
-		auto used = ToString(txt.begin(), txt.end(), -125.0e10f, 10);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		auto used = ToString(txt.begin(), txt.end(), -125.0e10F, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 8);
-		txt.resize(8);
+		txt.resize(8);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(txt == std::string("-1.25e12"));
-		used = ToString(txt.begin(), txt.end(), -1, 10);
+		used = ToString(txt.begin(), txt.end(), -1, 10);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 2);
 		txt.resize(used);
 		CHECK(txt == std::string("-1"));
@@ -264,28 +264,28 @@ TEST_SUITE("to string conversion") {
 
 	TEST_CASE("base") {
 		std::string txt{};
-		txt.resize(100);
-		auto used = ToString(txt.begin(), txt.end(), 0xF, 16);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		auto used = ToString(txt.begin(), txt.end(), 0xF, 16);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 1);
 		txt.resize(used);
 		CHECK(txt == std::string("F"));
-		txt.resize(100);
-		used = ToString(txt.begin(), txt.end(), float(0x38D7C50000000LL), 16);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), float(0x38D7C50000000LL), 16);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 9);
 		txt.resize(used);
 		CHECK(txt == std::string("3.8D7C5pC"));
-		txt.resize(100);
-		used = ToString(txt.begin(), txt.end(), float(-0x38D7C50000000LL), 16);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), float(-0x38D7C50000000LL), 16);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 10);
 		txt.resize(used);
 		CHECK(txt == std::string("-3.8D7C5pC"));
-		txt.resize(100);
-		used = ToString(txt.begin(), txt.end(), float(0x38D7C50000000LL), 2);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), float(0x38D7C50000000LL), 2);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 30);
 		txt.resize(used);
 		CHECK(txt == std::string("1.110001101011111000101e110001"));
-		txt.resize(100);
-		used = ToString(txt.begin(), txt.end(), float(0x1000LL), 16);
+		txt.resize(100);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
+		used = ToString(txt.begin(), txt.end(), float(0x1000LL), 16);//NOLINT(cppcoreguidelines-avoid-magic-numbers)
 		CHECK(used == 4);
 		txt.resize(used);
 		CHECK(txt == std::string("1000"));

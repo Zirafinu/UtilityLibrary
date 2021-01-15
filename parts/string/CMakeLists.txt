@@ -8,7 +8,8 @@ add_executable(test_string_conversion test_string_conversion.cpp conversion_cons
 target_link_libraries(test_string_conversion PRIVATE doctest::doctest)
 target_link_libraries(test_string_conversion PRIVATE ${PROJECT_NAME}::STRING_CONVERSION)
 add_test(string_conversion test_string_conversion)
-#set_target_properties(test_string_conversion PROPERTIES CXX_CLANG_TIDY "clang-tidy;--line-filter=[{\"name\":\"doctest.h\"}];--config="	)
+
+set_target_properties(test_string_conversion PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 	
 add_custom_command(TARGET test_string_conversion
                    POST_BUILD

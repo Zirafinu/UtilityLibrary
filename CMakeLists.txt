@@ -37,6 +37,8 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 find_package(doctest REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}/remoteProjects/install/")
 find_package(Microsoft.GSL REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}/remoteProjects/install/")
 
+set(CLANG_TIDY_STRING "clang-tidy;--header-filter=.*\\.hpp;--format-style=file;--config=;--fix")
+
 #add_subdirectory("remoteProjects")
 add_subdirectory("parts")
 

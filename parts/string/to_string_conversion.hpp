@@ -8,7 +8,6 @@
 #ifndef TO_STRING_CONVERSION_HPP
 #define TO_STRING_CONVERSION_HPP
 
-
 #include <cctype>
 #include <cmath>
 
@@ -36,7 +35,7 @@ template<typename T>
 struct SConversionType : public ConversionTypeSelector<T, std::is_integral<T>::value && std::is_signed<T>::value>{};
 
 
-uint_fast8_t DigitToCharacter(uint_fast8_t number) {
+[[nodiscard]] constexpr auto DigitToCharacter(uint_fast8_t number) noexcept -> uint_fast8_t {
 	if(number > DECIMAL_BASE){
 		return 'A' - DECIMAL_BASE + number;
 	}

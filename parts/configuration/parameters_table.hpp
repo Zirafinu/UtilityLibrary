@@ -18,6 +18,10 @@ class CAParameter;
 class CAParametersTable {
 public:
 	virtual ~CAParametersTable() = default;
+	CAParametersTable(const CAParametersTable&) = delete;
+	CAParametersTable(const CAParametersTable&&) = delete;
+	auto operator=(const CAParametersTable&) -> CAParametersTable& = delete;
+	auto operator=(CAParametersTable&&) -> CAParametersTable& = delete;
 
 	// NOLINTNEXTLINE(readability-identifier-naming)
 	[[nodiscard]] virtual auto begin() const noexcept-> CAParameter*const* = 0;
