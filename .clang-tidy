@@ -1,5 +1,5 @@
 ---
-Checks:              '-*,performance-*,cppcoreguidelines-*,modernize-*,readability-*,bugprone-*,google-*,-bugprone-dynamic-static-initializers,-modernize-use-trailing-return-type'
+Checks:              '-*,performance-*,cppcoreguidelines-*,modernize-*,readability-*,bugprone-*,google-*,-bugprone-dynamic-static-initializers,-modernize-use-trailing-return-type,-readability-magic-numbers'
 WarningsAsErrors:    '*'
 FormatStyle:         file
 User:                user
@@ -159,6 +159,9 @@ CheckOptions: [
  { key: readability-identifier-naming.VariableSuffix, value: ''},
  { key: readability-identifier-naming.VirtualMethodCase, value: CamelCase},
  { key: readability-identifier-naming.VirtualMethodPrefix, value: ''},
- { key: readability-identifier-naming.VirtualMethodSuffix, value: ''}
+ { key: readability-identifier-naming.VirtualMethodSuffix, value: ''},
+ { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor, value: true},
+ { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctions, value: true},
+ { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted, value: false}
 ]
 ...
