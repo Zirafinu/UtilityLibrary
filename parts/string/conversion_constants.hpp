@@ -13,7 +13,7 @@ namespace helpers {
 constexpr int BINARY_BASE = 2;
 constexpr int DECIMAL_BASE = 10;
 constexpr int HEXDEC_BASE = 16;
-} // namespace
-} // namespace utility::string_conversion
+}  // namespace helpers
+}  // namespace utility::string_conversion
 
 #endif /* CONVERSION_CONSTANTS_HPP */

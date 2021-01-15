@@ -22,3 +22,8 @@ add_custom_command(TARGET test_parameters
                    POST_BUILD
                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure
                    )
+
+add_custom_command(TARGET test_parameters
+				   PRE_BUILD 
+				   COMMAND clang-format --style=file -i "${CMAKE_CURRENT_SOURCE_DIR}/**.*pp"
+				   )

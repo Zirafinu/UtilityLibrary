@@ -10,8 +10,14 @@ target_link_libraries(test_crc PRIVATE ${PROJECT_NAME}::CRC)
 add_test(crc test_crc)
 
 set_target_properties(test_crc PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
-	
+
 add_custom_command(TARGET test_crc
                    POST_BUILD
                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure
                    )
+
+add_custom_command(TARGET test_crc
+                   PRE_BUILD
+                   COMMAND clang-format --style=file -i "${CMAKE_CURRENT_SOURCE_DIR}/**.*pp"
+                   )
+                   
