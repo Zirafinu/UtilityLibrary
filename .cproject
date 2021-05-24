@@ -21,11 +21,11 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="de.marw.cmake.cdt.lsp.buildArtefactType.cmake" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" description="" id="de.marw.cmake.cdt.lsp.config.debug.20575855" name="Debug" optionalBuildProperties="" parent="de.marw.cmake.cdt.lsp.config.debug">
+				<configuration artifactName="${ProjName}" buildArtefactType="de.marw.cmake.cdt.lsp.buildArtefactType.cmake" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" description="" id="de.marw.cmake.cdt.lsp.config.debug.20575855" name="Debug" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.connection=unix:///var/run/docker.sock" parent="de.marw.cmake.cdt.lsp.config.debug">
 					<folderInfo id="de.marw.cmake.cdt.lsp.config.debug.20575855." name="/" resourcePath="">
 						<toolChain id="de.marw.cmake.cdt.lsp.config.debug.toolChain.1569178008" name="CMake driven" superClass="de.marw.cmake.cdt.lsp.config.debug.toolChain">
 							<targetPlatform id="de.marw.cmake.cdt.lsp.targetPlatform.cmake.115660013" name="Any Platform" superClass="de.marw.cmake.cdt.lsp.targetPlatform.cmake"/>
-							<builder buildPath="/UtilityLibrary/build/Debug" id="de.marw.cmake.cdt.lsp.builder.portable.1314949605" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
+							<builder buildPath="/UtilityLibrary/build/Debug" id="de.marw.cmake.cdt.lsp.builder.portable.1314949605" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder" parallelBuildOn="true" parallelizationNumber="optimal" stopOnErr="false" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
 							<tool id="de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1793027530" name="CMake driven Languages Proxy" superClass="de.marw.cmake.cdt.lsp.toolchain.tool.dummy">
 								<inputType id="de.marw.cmake.cdt.lsp.inputType.c.1983485817" superClass="de.marw.cmake.cdt.lsp.inputType.c"/>
 								<inputType id="de.marw.cmake.cdt.lsp.inputType.cpp.1073627040" superClass="de.marw.cmake.cdt.lsp.inputType.cpp"/>
@@ -38,8 +38,6 @@
 			<storageModule buildDir="build/${ConfigName}" moduleId="de.marw.cdt.cmake.core.settings">
 				<options/>
 				<linux command="cmake" generator="Ninja" use-default="true">
-					<defs/>
-					<undefs/>
 				</linux>
 				<undefs/>
 			</storageModule>
@@ -122,6 +120,17 @@
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Default">
+			<resource resourceType="PROJECT" workspacePath="/UtilityLibrary"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/UtilityLibrary"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/UtilityLibrary"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

@@ -6,11 +6,12 @@
  */
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <from_string_conversion.hpp>
-#include <string>
-#include <to_string_conversion.hpp>
+#include <doctest/doctest.h>
 
-#include "doctest/doctest.h"
+#include <string>
+
+#include "from_string_conversion.hpp"
+#include "to_string_conversion.hpp"
 
 TEST_SUITE("from string conversion") {
     TEST_CASE("parseSign") {

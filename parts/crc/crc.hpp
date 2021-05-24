@@ -9,31 +9,13 @@
 #define CRC_HPP
 
 #include <array>
+#include <bit_operations.hpp>
 #include <climits>
 #include <cstdint>
 
 namespace utility::crc {
 
-template <typename T>
-[[nodiscard]] constexpr auto RevertBits(const T &value) noexcept -> T {
-    static_assert(std::is_integral<T>::value, "Type has to be integral");
-    T result{value};
-    T mask = ~T(0);
-    std::size_t bits = CHAR_BIT * sizeof(T) / 2;
-    while (bits > 0) {
-        mask ^= T(mask << bits);
-        result = T(T(result >> bits) & mask) | T(T(result & mask) << bits);
-        bits /= 2;
-    }
-    return result;
-}
-
-template <typename T = uint16_t,
-          T POLYNOM =
-              0x8005,  // NOLINT(readability-magic-numbers,cppcoreguidelines-avoid-magic-numbers)
-          std::size_t BITS_IN_TABLE = CHAR_BIT,
-          bool REFLECT_DATA =
-              false>  // NOLINT(readability-magic-numbers,cppcoreguidelines-avoid-magic-numbers)
+template <typename T, T POLYNOM, std::size_t BITS_IN_TABLE, bool REFLECT_DATA>
 class CCrcBase {
     static_assert(!std::is_signed<T>::value);
     static_assert(std::is_integral<T>::value);
@@ -67,12 +49,12 @@ class CCrcBase {
    public:
     using ValueType = T;
 
-    CCrcBase() = default;
+    constexpr CCrcBase() = default;
 
     [[nodiscard]] constexpr static auto AppendByte(uint8_t value, ValueType crc_value) noexcept
         -> ValueType {
         if constexpr (REFLECT_DATA) {
-            value = RevertBits(value);
+            value = utility::general::bit_ops::RevertBits(value);
         }
         for (int8_t i = CHAR_BIT - BITS_IN_TABLE; i >= 0; i -= BITS_IN_TABLE) {
             uint8_t selected_bits = crc_value >> (BIT_LENGTH - BITS_IN_TABLE);
@@ -95,12 +77,13 @@ class CCrcBase<T, POLYNOM, 1, REFLECT_DATA> {
    public:
     using ValueType = T;
 
-    CCrcBase() = default;
+    constexpr CCrcBase() = default;
 
     [[nodiscard]] constexpr static auto AppendByte(uint8_t value, ValueType crc_value) noexcept
         -> ValueType {
         if constexpr (REFLECT_DATA) {
-            crc_value ^= ValueType(RevertBits(value)) << (BIT_LENGTH - CHAR_BIT);
+            crc_value ^= ValueType(utility::general::bit_ops::RevertBits(value))
+                         << (BIT_LENGTH - CHAR_BIT);
         } else {
             crc_value ^= ValueType(value) << (BIT_LENGTH - CHAR_BIT);
         }
@@ -116,19 +99,19 @@ class CCrcBase<T, POLYNOM, 1, REFLECT_DATA> {
 };
 
 template <typename T = CCrcBase<uint16_t, 0x8005U,  // NOLINT(cppcoreguidelines-avoid-magic-numbers)
-                                CHAR_BIT>,
-          typename T::ValueType INITIAL = 0x0000U,  // NOLINT(cppcoreguidelines-avoid-magic-number)
-          typename T::ValueType XOR_VALUE = 0x0000U, bool REFLECT_REMAINDER = false>
+                                CHAR_BIT, false>,
+          typename T::ValueType INITIAL = 0, typename T::ValueType XOR_VALUE = 0,
+          bool REFLECT_REMAINDER = false>
 class CCrc {
     using ValueType = typename T::ValueType;
     T m_ccrc_base{};
     ValueType m_crc_value{INITIAL};
 
    public:
-    CCrc() = default;
+    constexpr CCrc() = default;
 
     template <typename U>
-    void AddData(U value) noexcept {
+    constexpr void AddData(U value) noexcept {
         static_assert(std::is_integral<U>::value);
         for (std::size_t i = sizeof(U); i > 0; --i) {
             m_crc_value =
@@ -136,25 +119,37 @@ class CCrc {
         }
     }
 
-    void AddData(const uint8_t *start, const uint8_t *end) noexcept {
+    constexpr void AddData(const uint8_t *start, const uint8_t *end) noexcept {
         while (start != end) {
             m_crc_value = m_ccrc_base.AppendByte(
                 *start++, m_crc_value);  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         }
     }
 
-    void AddData(const uint8_t *start, std::size_t length) noexcept {
+    constexpr void AddData(const uint8_t *start, std::size_t length) noexcept {
         AddData(start, start + length);  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     }
 
-    [[nodiscard]] auto GetCRC() const noexcept -> ValueType {
+    [[nodiscard]] constexpr auto GetCRC() const noexcept -> ValueType {
         if constexpr (REFLECT_REMAINDER) {
-            return RevertBits(m_crc_value) ^ XOR_VALUE;
+            return utility::general::bit_ops::RevertBits(m_crc_value) ^ XOR_VALUE;
         } else {
             return m_crc_value ^ XOR_VALUE;
         }
     }
 };
+
+constexpr uint16_t CRC_16_IBM_POLINOM = 0x8005U;
+template <std::size_t BITS_IN_TABLE>
+using CCrc16IBM = CCrc<CCrcBase<uint16_t, CRC_16_IBM_POLINOM, BITS_IN_TABLE, false>, 0, 0, false>;
+
+constexpr uint32_t CRC_32_POLINOM = 0x04C11DB7U;
+constexpr uint32_t CRC_32_INITIAL = 0xFFffFFffU;
+constexpr uint32_t CRC_32_XOR = 0xFFffFFffU;
+template <std::size_t BITS_IN_TABLE>
+using CCrc32 =
+    CCrc<CCrcBase<uint32_t, CRC_32_POLINOM, BITS_IN_TABLE, true>, CRC_32_INITIAL, CRC_32_XOR, true>;
+
 } /* namespace utility::crc */
 
 #endif /* CRC_HPP */

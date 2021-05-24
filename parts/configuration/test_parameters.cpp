@@ -44,16 +44,17 @@ auto SerialParam2::GetInstance() noexcept -> ThisType& {
     return s_param;
 }
 
-utility::parameters::CCParametersTableImpl<SerialParam, SerialParam1, SerialParam2> G_PARAMETERS;
-
 template <typename T>
 std::string ToString(const T& array) {
     return std::accumulate(std::begin(array), std::end(array), std::string{});
 }
 
 TEST_SUITE("parameters") {
+    utility::parameters::CCParametersTableImpl<SerialParam, SerialParam1, SerialParam2>
+        G_PARAMETERS;
+
     TEST_CASE("initial serial") {
-        auto tmp = (*G_PARAMETERS.GetFirst())->GetValueBytes();
+        auto tmp = (*G_PARAMETERS.GetTableBegin())->GetValueBytes();
         CHECK(tmp.size() == std::tuple_size_v<SerialType>);
         std::string cmp{"00000000"};
         std::inner_product(tmp.begin(), tmp.end(), cmp.begin(), 0, std::plus<>(),

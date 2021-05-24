@@ -10,9 +10,11 @@
 
 namespace utility::string_conversion {
 namespace helpers {
+
 constexpr int BINARY_BASE = 2;
 constexpr int DECIMAL_BASE = 10;
 constexpr int HEXDEC_BASE = 16;
+
 }  // namespace helpers
 }  // namespace utility::string_conversion
 

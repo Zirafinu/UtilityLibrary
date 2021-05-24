@@ -16,10 +16,9 @@
 
 namespace utility::string_conversion {
 
+namespace helpers {
 template <typename T>
 using NotNull = gsl::not_null<T *>;
-
-namespace helpers {
 
 template <typename T, typename IT_T>
 struct SParsingResult {
@@ -72,8 +71,8 @@ template <typename CHAR_TYPE>
 }  // namespace helpers
 
 template <typename T, bool CHECK_OVERFLOWS = false, typename IT_T>
-[[nodiscard]] constexpr auto IntFromString(IT_T cur_char_it, IT_T end_char_it, NotNull<T> result,
-                                           T base = 0) -> IT_T {
+[[nodiscard]] constexpr auto IntFromString(IT_T cur_char_it, IT_T end_char_it,
+                                           helpers::NotNull<T> result, T base = 0) -> IT_T {
     const auto res = helpers::ParseSign<T>(cur_char_it);
     const auto sign = res.m_value;
     cur_char_it = res.m_it;
@@ -105,8 +104,8 @@ template <typename T, bool CHECK_OVERFLOWS = false, typename IT_T>
 }
 
 template <typename T, typename IT_T>
-[[nodiscard]] constexpr auto FloatFromString(IT_T cur_char_it, IT_T end_char_it, NotNull<T> result)
-    -> IT_T {
+[[nodiscard]] constexpr auto FloatFromString(IT_T cur_char_it, IT_T end_char_it,
+                                             helpers::NotNull<T> result) -> IT_T {
     static_assert(std::is_floating_point_v<T>);
 
     const auto sign_res = helpers::ParseSign<T>(cur_char_it);
@@ -118,13 +117,14 @@ template <typename T, typename IT_T>
     cur_char_it = base_res.m_it;
 
     T integer_part{0};
-    cur_char_it = IntFromString<T>(cur_char_it, end_char_it, NotNull<T>{&integer_part}, base);
+    cur_char_it =
+        IntFromString<T>(cur_char_it, end_char_it, helpers::NotNull<T>{&integer_part}, base);
     if (cur_char_it != end_char_it && *cur_char_it == '.') {
         ++cur_char_it;
         T fractional_part{0};
         const auto start_it = cur_char_it;
         cur_char_it =
-            IntFromString<T>(cur_char_it, end_char_it, NotNull<T>{&fractional_part}, base);
+            IntFromString<T>(cur_char_it, end_char_it, helpers::NotNull<T>{&fractional_part}, base);
         integer_part += fractional_part / std::pow(base, T(cur_char_it - start_it));
     }
 
@@ -134,8 +134,8 @@ template <typename T, typename IT_T>
          (char(std::tolower(*cur_char_it)) == 'p'))) {
         ++cur_char_it;
         int32_t exp{};
-        cur_char_it =
-            IntFromString<int32_t, true>(cur_char_it, end_char_it, NotNull<int32_t>{&exp}, base);
+        cur_char_it = IntFromString<int32_t, true>(cur_char_it, end_char_it,
+                                                   helpers::NotNull<int32_t>{&exp}, base);
         exponent_part = std::pow(T(base), T(exp));
     }
     *result = integer_part * sign * exponent_part;
@@ -143,7 +143,7 @@ template <typename T, typename IT_T>
 }
 
 template <typename T, bool CHECK_OVERFLOW = false, typename IT_T = char *>
-[[nodiscard]] constexpr auto FromString(IT_T begin, IT_T end, NotNull<T> result) -> IT_T {
+[[nodiscard]] constexpr auto FromString(IT_T begin, IT_T end, helpers::NotNull<T> result) -> IT_T {
     if (begin == end) {
         return begin;
     }

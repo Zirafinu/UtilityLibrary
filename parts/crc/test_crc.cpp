@@ -11,11 +11,14 @@
 
 TEST_SUITE("CRC") {
     using utility::crc::CCrc;
+    using utility::crc::CCrc16IBM;
+    using utility::crc::CCrc32;
     using utility::crc::CCrcBase;
+    constexpr uint16_t EASY_POLI = 0xFFFFU;
 
     template <uint16_t VALUE, uint_fast8_t TABLE_BITS>
     void CheckCRCInitialValue() {
-        CCrc<CCrcBase<uint16_t, 0xFFFF, TABLE_BITS>, VALUE, 0, false> crc{};  // NOLINT
+        CCrc<CCrcBase<uint16_t, EASY_POLI, TABLE_BITS, false>, VALUE, 0, false> crc{};  // NOLINT
         CHECK(crc.GetCRC() == VALUE);
     }
     TEST_CASE("Initial Values") {
@@ -30,7 +33,7 @@ TEST_SUITE("CRC") {
 
     template <uint16_t VALUE, uint_fast8_t TABLE_BITS>
     void CheckCRCXorValue() {
-        CCrc<CCrcBase<uint16_t, 0xFFFF, TABLE_BITS>, 0, VALUE, false> crc{};  // NOLINT
+        CCrc<CCrcBase<uint16_t, EASY_POLI, TABLE_BITS, false>, 0, VALUE, false> crc{};  // NOLINT
         CHECK(crc.GetCRC() == VALUE);
     }
     TEST_CASE("XOR Values") {
@@ -45,7 +48,7 @@ TEST_SUITE("CRC") {
 
     template <uint_fast8_t TABLE_BITS>
     void CheckSingleByte() {
-        CCrc<CCrcBase<uint16_t, 0x8005, TABLE_BITS, false>, 0, 0> crc{};  // NOLINT
+        CCrc16IBM<TABLE_BITS> crc{};
         crc.AddData(0);
         CHECK(crc.GetCRC() == 0);
         crc.AddData('1');
@@ -62,11 +65,7 @@ TEST_SUITE("CRC") {
 
     template <uint_fast8_t TABLE_BITS>
     void Check123456789String() {
-        CCrc<CCrcBase<uint32_t, 0x04C11DB7,  // NOLINT
-                      TABLE_BITS, true>,
-             0xFFffFFff, 0xFFffFFff,  // NOLINT
-             true>
-            crc{};
+        CCrc32<TABLE_BITS> crc{};
         const std::array<uint8_t, 9> data{'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         crc.AddData(data.cbegin(), data.cend());

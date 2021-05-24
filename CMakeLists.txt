@@ -2,24 +2,26 @@ cmake_minimum_required (VERSION 3.12)
 cmake_policy(SET CMP0076 NEW)
 
 project (UtilityLibrary VERSION 0.0.0 LANGUAGES CXX)
-include( CTest )
-#set( CTEST_USE_LAUNCHERS YES )
+
+include(GNUInstallDirs)
+include(CTest)
+
 enable_testing()
 
 if(NOT APPLE)
 	set(CMAKE_INSTALL_RPATH $ORIGIN)
 endif()
 
-enable_language( CXX )
-set( CMAKE_CXX_STANDARD 17 )
-set( CMAKE_CXX_STANDARD_REQUIRED ON )
-set( CMAKE_CXX_EXTENSIONS OFF )
+enable_language(CXX)
+set( CMAKE_CXX_STANDARD 17)
+set( CMAKE_CXX_STANDARD_REQUIRED ON)
+set( CMAKE_CXX_EXTENSIONS OFF)
 
-set( CMAKE_CXX_VISIBILITY_PRESET hidden )
-set( CMAKE_VISIBILITY_INLINES_HIDDEN YES )
+set( CMAKE_CXX_VISIBILITY_PRESET hidden)
+set( CMAKE_VISIBILITY_INLINES_HIDDEN YES)
  
-#include( GenerateExportHeader )
-#generate_export_header( ${PROJECT_NAME} )
+#include(GenerateExportHeader)
+#generate_export_header(${PROJECT_NAME})
 
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 
@@ -30,27 +32,17 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 #	VERSION ${PROJECT_VERSION}
 #	)
 
-#target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
-#target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
-#target_compile_options(${PROJECT_NAME} PRIVATE -Wextra)
-
 find_package(doctest REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}/remoteProjects/install/")
 find_package(Microsoft.GSL REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}/remoteProjects/install/")
 
 set(CLANG_TIDY_STRING "clang-tidy;--header-filter=.*\\.hpp;--format-style=file;--config=;--fix")
 
-#add_subdirectory("remoteProjects")
 add_subdirectory("parts")
-
-add_library(UtilityLibrary INTERFACE)
-target_link_libraries(UtilityLibrary INTERFACE crc)
-
-#target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft.GSL::GSL)
 
 #--------------
 # Installer Stuff
 # Use GNUInstallDirs to provide the right locations on all platforms
-#include(GNUInstallDirs)
+
 #install(TARGETS ${PROJECT_NAME}
 #	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 #		COMPONENT ${PROJECT_NAME}_Runtime
@@ -68,7 +60,7 @@ target_link_libraries(UtilityLibrary INTERFACE crc)
 # not yet intending to package this as anything 
 
 # -Generate Version File
-#include( CMakePackageConfigHelpers )
+#include(CMakePackageConfigHelpers)
 #write_basic_package_version_file(
 #	${PROJECT_NAME}ConfigVersion.cmake
 #	VERSION ${PROJECT_VERSION}

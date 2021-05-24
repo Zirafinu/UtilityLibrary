@@ -10,11 +10,11 @@
 #include "pid.hpp"
 
 TEST_SUITE("pid") {
-    using utility::controler::CPidControl;
+    using utility::controller::CPidControl;
 
     template <typename T>
     void CheckSetters() {
-        CPidControl<T> regulator{};
+        CPidControl<T> regulator{{1, 2, 3}};
         typename CPidControl<T>::SParameterSet params{1, 2, 3};  // NOLINT
         typename CPidControl<T>::SLimitSet limits{-100, 100};    // NOLINT
         regulator.SetParameters(params);
@@ -91,21 +91,20 @@ TEST_SUITE("pid") {
 
     template <typename T>
     void CheckLimitsPart() {
-        CPidControl<T> p_regulator{{2, 0, 0}, {0, 1}};
+        typename CPidControl<T>::SLimitSet limits{0, 1};
+        CPidControl<T> p_regulator{{2, 0, 0}, limits};
         p_regulator.SetSetPoint(0);
         CHECK(p_regulator.ComputeOutput(-1) == 1);
-        CHECK(p_regulator.ComputeOutput(0) == 0);
+        CHECK(p_regulator.ComputeOutput(1) == 0);
 
-        CPidControl<T> i_regulator{{0, 1, 0}, {0, 1}};
+        CPidControl<T> i_regulator{{0, 1, 0}, limits};
         i_regulator.SetSetPoint(0);
         CHECK(i_regulator.ComputeOutput(-2) == 1);
-        CHECK(i_regulator.ComputeOutput(-1) == 1);
-        CHECK(i_regulator.ComputeOutput(0) == 1);
+        CHECK(i_regulator.ComputeOutput(2) == 0);
 
-        CPidControl<T> d_regulator{{0, 0, 1}, {0, 1}};
+        CPidControl<T> d_regulator{{0, 0, 1}, limits};
         d_regulator.SetSetPoint(0);
         CHECK(d_regulator.ComputeOutput(-2) == 1);
-        CHECK(d_regulator.ComputeOutput(-1) == 0);
         CHECK(d_regulator.ComputeOutput(0) == 0);
     }
     TEST_CASE("limits") {

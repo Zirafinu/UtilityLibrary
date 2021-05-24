@@ -28,8 +28,6 @@ class CAParametersTable {
     // NOLINTNEXTLINE(readability-identifier-naming)
     [[nodiscard]] virtual auto end() const noexcept -> CAParameter* const* = 0;
 
-    [[nodiscard]] static auto GetInstance() noexcept -> CAParametersTable&;
-
    protected:
     CAParametersTable() = default;
 };
@@ -43,17 +41,13 @@ class CCParametersTableImpl : public CAParametersTable {
     CCParametersTableImpl() : CAParametersTable{} {};
 
     // NOLINTNEXTLINE(readability-identifier-naming)
-    [[nodiscard]] CAParameter* const* begin() const noexcept final { return GetFirst(); }
+    [[nodiscard]] CAParameter* const* begin() const noexcept final { return GetTableBegin(); }
     // NOLINTNEXTLINE(readability-identifier-naming)
-    [[nodiscard]] CAParameter* const* end() const noexcept final { return GetLast(); }
+    [[nodiscard]] CAParameter* const* end() const noexcept final { return GetTableEnd(); }
 
-    [[nodiscard]] constexpr auto GetFirst() const noexcept -> CAParameter* const* {
-        return mc_ptr_list.cbegin();
-    }
+    [[nodiscard]] constexpr auto GetTableBegin() const noexcept { return mc_ptr_list.cbegin(); }
 
-    [[nodiscard]] constexpr auto GetLast() const noexcept -> CAParameter* const* {
-        return mc_ptr_list.cend();
-    }
+    [[nodiscard]] constexpr auto GetTableEnd() const noexcept { return mc_ptr_list.cend(); }
 };
 
 }  // namespace utility::parameters
