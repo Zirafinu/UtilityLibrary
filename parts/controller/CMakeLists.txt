@@ -1,20 +1,20 @@
 enable_language(CXX)
 
 CreateLibrary(
-	NAME CONTROLLER
+	NAME Controller
 	IS_INTERFACE
 	SRCS
 		parameters.cpp
 	DEPENDENCIES
-		"${PROJECT_NAME}::GENERAL"
+		"${PROJECT_NAME}::General"
 	PUBLIC_HEADERS
 		pid.hpp
 	)
 
 add_executable(TEST_PID test_pid.cpp)
 target_link_libraries(TEST_PID PRIVATE doctest::doctest)
-target_link_libraries(TEST_PID PRIVATE ${PROJECT_NAME}::CONTROLLER)
-add_test(PID TEST_PID)
+target_link_libraries(TEST_PID PRIVATE ${PROJECT_NAME}::Controller)
+add_test(Controller TEST_PID)
 
 set_target_properties(TEST_PID PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 add_custom_command(TARGET TEST_PID

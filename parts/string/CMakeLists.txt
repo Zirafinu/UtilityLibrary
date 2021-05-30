@@ -14,7 +14,7 @@ add_executable(test_string_conversion
 	)
 target_link_libraries(test_string_conversion PRIVATE doctest::doctest)
 target_link_libraries(test_string_conversion PRIVATE ${PROJECT_NAME}::StringConversion)
-add_test(string_conversion test_string_conversion)
+add_test(StringConversion test_string_conversion)
 
 set_target_properties(test_string_conversion PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 add_custom_command(TARGET test_string_conversion

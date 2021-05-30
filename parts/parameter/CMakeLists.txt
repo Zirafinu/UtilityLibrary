@@ -1,13 +1,13 @@
 enable_language(CXX)
 
 CreateLibrary(
-	NAME PARAMETERS
+	NAME Parameters
 	SRCS 
 		parameters.cpp
 	DEPENDENCIES
 		Microsoft.GSL::GSL
 		"${PROJECT_NAME}::StringConversion"
-		"${PROJECT_NAME}::GENERAL"
+		"${PROJECT_NAME}::General"
 	PUBLIC_HEADERS
 		parameters_converters.hpp
 		parameters_table.hpp
@@ -20,8 +20,8 @@ add_executable(TEST_PARAMETERS
 	test_parameters_table.cpp
 	)
 target_link_libraries(TEST_PARAMETERS PRIVATE doctest::doctest)
-target_link_libraries(TEST_PARAMETERS PRIVATE ${PROJECT_NAME}::PARAMETERS)
-add_test(PARAMETERS TEST_PARAMETERS)
+target_link_libraries(TEST_PARAMETERS PRIVATE ${PROJECT_NAME}::Parameters)
+add_test(Parameters TEST_PARAMETERS)
 
 set_target_properties(TEST_PARAMETERS PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 add_custom_command(TARGET TEST_PARAMETERS
