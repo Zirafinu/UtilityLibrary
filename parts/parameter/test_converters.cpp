@@ -9,7 +9,6 @@
 
 //#define DOCTEST_CONFIG_
 #include "doctest/doctest.h"
-
 #include "parameters.hpp"
 #include "parameters_converters.hpp"
 
