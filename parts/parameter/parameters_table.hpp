@@ -21,7 +21,7 @@ class CAParametersTable {
     CAParametersTable(const CAParametersTable&) = delete;
     CAParametersTable(const CAParametersTable&&) = delete;
     auto operator=(const CAParametersTable&) -> CAParametersTable& = delete;
-    auto operator=(CAParametersTable &&) -> CAParametersTable& = delete;
+    auto operator=(CAParametersTable&&) -> CAParametersTable& = delete;
 
     // NOLINTNEXTLINE(readability-identifier-naming)
     [[nodiscard]] virtual auto begin() const noexcept -> CAParameter* const* = 0;

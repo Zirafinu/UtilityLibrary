@@ -14,22 +14,13 @@ CreateLibrary(
 		parameters.hpp
 	)
 
-add_executable(TEST_PARAMETERS
-	test_parameters.cpp
-	test_converters.cpp
-	test_parameters_table.cpp
+CreateTest(
+	NAME Parameters_Test
+	SOURCES
+		test_parameters.cpp
+		test_converters.cpp
+		test_parameters_table.cpp
+	DEPENDS
+		doctest::doctest
+		${PROJECT_NAME}::Parameters
 	)
-target_link_libraries(TEST_PARAMETERS PRIVATE doctest::doctest)
-target_link_libraries(TEST_PARAMETERS PRIVATE ${PROJECT_NAME}::Parameters)
-add_test(Parameters TEST_PARAMETERS)
-
-set_target_properties(TEST_PARAMETERS PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
-add_custom_command(TARGET TEST_PARAMETERS
-	PRE_BUILD 
-	COMMAND clang-format --style=file -i "${CMAKE_CURRENT_SOURCE_DIR}/**.*pp"
-	)
-
-add_custom_command(TARGET TEST_PARAMETERS
-    POST_BUILD
-    COMMAND ctest -C $<CONFIGURATION> --output-on-failure
-    )
