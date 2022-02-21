@@ -2,13 +2,13 @@ enable_language(CXX)
 
 CreateLibrary(
 	NAME Parameters
-	SRCS 
+	SOURCES
 		parameters.cpp
-	DEPENDENCIES
+	DEPENDS
 		Microsoft.GSL::GSL
 		"${PROJECT_NAME}::StringConversion"
 		"${PROJECT_NAME}::General"
-	PUBLIC_HEADERS
+	PUBLIC_HEADER
 		parameters_converters.hpp
 		parameters_table.hpp
 		parameters.hpp

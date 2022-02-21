@@ -3,9 +3,9 @@ enable_language(CXX)
 CreateLibrary(
 	NAME StringConversion
 	IS_INTERFACE
-	DEPENDENCIES
+	DEPENDS
 		Microsoft.GSL::GSL
-	PUBLIC_HEADERS
+	PUBLIC_HEADER
 		conversion_constants.hpp
 		from_string_conversion.hpp
 		to_string_conversion.hpp

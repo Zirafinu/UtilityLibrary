@@ -3,11 +3,11 @@ enable_language(CXX)
 CreateLibrary(
 	NAME CRC
 	IS_INTERFACE
-	SRCS 
+	SOURCES 
 		parameters.cpp
-	DEPENDENCIES
+	DEPENDS
 		"${PROJECT_NAME}::General"
-	PUBLIC_HEADERS
+	PUBLIC_HEADER
 		crc.hpp
 	)
 
