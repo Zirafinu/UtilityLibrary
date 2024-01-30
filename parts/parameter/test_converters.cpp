@@ -7,6 +7,7 @@
 
 #include <numeric>
 
+#undef DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest/doctest.h"
 #include "parameters.hpp"
 #include "parameters_converters.hpp"

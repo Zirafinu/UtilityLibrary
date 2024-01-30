@@ -1,12 +1,14 @@
-cmake_minimum_required(VERSION 3.14)
-include (FetchContent)
 
-FetchContent_Declare(DocTest 
-    GIT_REPOSITORY "https://github.com/onqtam/doctest"         
-    GIT_TAG "932a2ca50666138256dae56fbb16db3b1cae133a"
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/doctest" )
-FetchContent_Declare(GSL 
-    GIT_REPOSITORY "https://github.com/microsoft/GSL/"         
-    GIT_TAG "0f6dbc9e2915ef5c16830f3fa3565738de2a9230"
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/gsl" )
+include(FetchContent)
+
+FetchContent_Declare(DocTest
+        GIT_REPOSITORY "https://github.com/doctest/doctest.git"
+        GIT_TAG "ae7a13539fb71f270b87eb2e874fbac80bc8dda2" # 2.4.11
+)
+
+FetchContent_Declare(GSL
+        GIT_REPOSITORY "https://github.com/microsoft/GSL/"
+        GIT_TAG "0f6dbc9e2915ef5c16830f3fa3565738de2a9230"
+)
+
 FetchContent_MakeAvailable(DocTest GSL)

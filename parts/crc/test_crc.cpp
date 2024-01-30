@@ -5,7 +5,6 @@
  *      Author: sebastian
  */
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "crc.hpp"
 #include "doctest/doctest.h"
 

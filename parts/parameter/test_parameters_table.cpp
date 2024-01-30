@@ -4,10 +4,9 @@
  *  Created on: 24.05.2021
  *      Author: sebastian
  */
-
 #include <iterator>
 
-//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#undef DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest/doctest.h"
 #include "parameters.hpp"
 #include "parameters_converters.hpp"

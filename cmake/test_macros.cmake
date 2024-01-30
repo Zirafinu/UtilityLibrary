@@ -30,6 +30,7 @@ function( CreateTest )
     	)
     if(((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) OR TEST_UTILITY_LIB) AND BUILD_TESTING)
 		add_executable(${TEST_NAME} ${TEST_SOURCES})
+        target_compile_definitions(${TEST_NAME} PRIVATE DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN=1)
 		set_target_properties(${TEST_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_STRING}")
 		
 		foreach(dep ${TEST_DEPENDS})

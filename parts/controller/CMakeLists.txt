@@ -1,4 +1,3 @@
-enable_language(CXX)
 
 CreateLibrary(
 	NAME Controller

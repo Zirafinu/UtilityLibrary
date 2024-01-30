@@ -5,10 +5,10 @@
  *      Author: sebastian
  */
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
 #include <string>
+#include <array>
 
 #include "from_string_conversion.hpp"
 #include "to_string_conversion.hpp"
